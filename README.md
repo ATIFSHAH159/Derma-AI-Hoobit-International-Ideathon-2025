@@ -101,5 +101,3 @@ Skin cancer is one of the most common cancers worldwide, yet early detection is 
 git clone https://github.com/ATIFSHAH159/Derma-AI-Hoobit-International-Ideathon-2025
 cd DermAI
 
----
-Made with ❤️ by Syed Atif Shah
