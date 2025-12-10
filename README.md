@@ -52,6 +52,25 @@ Skin cancer is one of the most common cancers worldwide, yet early detection is 
 - **UI/UX Assistance:** Claude AI for design inspiration and coding guidance  
 
 ---
+## 🖼️ Screenshots
+
+Here are some screenshots of key sections of the DermAI application:
+
+**1. Upload Image and Prediction Results**  
+![Prediction Results](Screenshots/1.png)
+
+**3. AI Explanation**  
+![AI Explanation](Screenshots/4.png)
+
+**4. Doctor Recommendations**  
+![Doctor Recommendations](Screenshots/2.png)
+
+**5. PDF Report Generation**  
+![PDF Report](Screenshots/6.png)
+
+**6. Chatbot Interaction**  
+![Mobile View](Screenshots/5.png)
+
 
 ## Challenges we ran into
 - Integrating **Google Gemini AI** with Flask  
