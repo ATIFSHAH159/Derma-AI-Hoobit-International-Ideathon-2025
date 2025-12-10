@@ -597,7 +597,7 @@ def download_report():
             c.drawString(40, page_height - 35, "Skin Lesion Detection Report")
             c.setFont("Helvetica", 9)
             c.drawRightString(page_width - 40, page_height - 35, "AI-Powered Dermatological Analysis")
-            c.drawRightString(page_width - 40, page_height - 50, "Created by Syed Atif Shah, Daim Ahmad")
+            c.drawRightString(page_width - 40, page_height - 50, "Created by Syed Atif Shah")
             c.drawRightString(page_width - 40, page_height - 65, f"Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}")
 
             y = page_height - 100
@@ -766,7 +766,7 @@ def download_report():
             subtitle_format.font.italic = True
             
             # Authors and date
-            doc.add_paragraph('Created by Syed Atif Shah, Daim Ahmad')
+            doc.add_paragraph('Created by Syed Atif Shah')
             doc.add_paragraph(f"Generated: {time.strftime('%Y-%m-%d %H:%M:%S')}")
             
             doc.add_paragraph()  # Spacer
