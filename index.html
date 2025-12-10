@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Skin Cancer Detection System</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🔬 DERMA AI</h1>
+            <p>Advanced AI-Powered Dermatological Analysis using EfficientNet</p>
+        </div>
+
+        <!-- Split Screen: Upload (Left) | Results (Right) -->
+        <div class="main-content">
+            <!-- Left Side: Upload Section -->
+            <div class="upload-section">
+                <div class="section-header">
+                    📤 Patient Information & Image Upload
+                </div>
+                <div class="section-body">
+                    <div class="alert alert-success" id="successAlert">
+                        <strong><span class="status-indicator connected"></span>Connected:</strong> Backend server is running!
+                    </div>
+
+                    <div class="alert alert-error" id="errorAlert">
+                        <strong><span class="status-indicator disconnected"></span>Error:</strong> <span id="errorMessage"></span>
+                    </div>
+
+                    <!-- Patient Information Form (shown initially) -->
+                    <div id="patientFormContainer">
+                        <div class="patient-form">
+                            <div class="form-group">
+                                <label for="patientName">
+                                    <span class="form-icon">👤</span>
+                                    Patient Name *
+                                </label>
+                                <input type="text" id="patientName" class="form-input" placeholder="Enter full name" required>
+                            </div>
+
+                            <div class="form-row">
+                                <div class="form-group">
+                                    <label for="patientAge">
+                                        <span class="form-icon">🎂</span>
+                                        Age *
+                                    </label>
+                                    <input type="number" id="patientAge" class="form-input" placeholder="Age" min="1" max="120" required>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="patientSex">
+                                        <span class="form-icon">⚧</span>
+                                        Sex *
+                                    </label>
+                                    <select id="patientSex" class="form-input" required>
+                                        <option value="">Select</option>
+                                        <option value="Male">Male</option>
+                                        <option value="Female">Female</option>
+                                        <option value="Other">Other</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="form-note">
+                                <strong>ℹ️ Note:</strong> All fields are required before uploading an image
+                            </div>
+                        </div>
+
+                        <!-- Upload Area (shown after form is filled) -->
+                        <div class="upload-area disabled" id="uploadArea">
+                            <div class="upload-icon">📸</div>
+                            <div class="upload-text">Click to upload or drag and drop</div>
+                            <div class="upload-subtext">Supports: JPG, PNG (Max 10MB)</div>
+                            <div class="upload-warning">⚠️ Please fill patient information first</div>
+                            <input type="file" id="fileInput" accept="image/jpeg,image/jpg,image/png" disabled>
+                        </div>
+                    </div>
+
+                    <!-- Preview Area (shown after upload) -->
+                    <div class="preview-image-container hidden" id="previewContainer">
+                        <div class="patient-info-badge">
+                            <strong id="previewPatientName"></strong>
+                            <span id="previewPatientDetails"></span>
+                        </div>
+                        <img id="previewImage" class="preview-image" alt="Preview">
+                        <button class="btn btn-reset" onclick="resetUpload()">
+                            🔄 New Analysis
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Side: Results Section -->
+            <div class="results-section">
+                <div class="section-header">
+                    📊 Analysis Results
+                </div>
+                <div class="results-body">
+                    <!-- Empty State (shown initially) -->
+                    <div class="empty-state" id="emptyState">
+                        <div class="empty-state-icon">🔍</div>
+                        <div class="empty-state-text">Upload an image to see results</div>
+                        <p style="color: #aaa; margin-top: 10px;">AI-powered analysis will appear here</p>
+                    </div>
+
+                    <!-- Loading State -->
+                    <div class="loading" id="loading">
+                        <div class="spinner"></div>
+                        <div class="loading-text">Analyzing image... Please wait</div>
+                    </div>
+
+                    <!-- Results (shown after prediction) -->
+                    <div class="hidden" id="resultsContainer">
+                        <div class="prediction-badge" id="predictionLabel">
+                            Prediction: Loading...
+                        </div>
+
+                        <div id="confidenceResults"></div>
+
+                        <div class="alert alert-warning active" style="margin-top: 25px;">
+                            <strong>⚠️ Medical Disclaimer:</strong> This is an AI-assisted tool for educational purposes. Always consult a qualified dermatologist for professional medical diagnosis.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Full-width sections below the two-column layout -->
+        <div class="fullwidth-sections">
+            <!-- Specialized Medical LLM Analysis (full width) -->
+            <div id="medicalAnalysisContainer" class="hidden" style="margin: 0 0 30px 0;">
+                <div class="section-header" style="padding: 15px 30px; font-size: 1.1em; border-radius: 12px 12px 0 0;">
+                    🏥 Specialized Medical LLM Analysis
+                </div>
+                <div id="medicalAnalysis" class="medical-analysis-content" style="border-radius: 0 0 12px 12px;"></div>
+                <div class="report-actions">
+                    <button class="btn btn-download" onclick="downloadReport('pdf')">
+                        <span class="btn-icon">📄</span>
+                        Download PDF Report
+                    </button>
+                    <button class="btn-secondary btn-download" onclick="downloadReport('docx')">
+                        <span class="btn-icon">📝</span>
+                        Download Word Report
+                    </button>
+                </div>
+            </div>
+
+            <!-- Recommended Doctors (full width) -->
+            <div id="doctorsSection" class="hidden doctors-section">
+                <div class="section-header" style="padding: 15px 30px; font-size: 1.1em; border-radius: 12px 12px 0 0;">
+                    👨‍⚕️ Recommended Specialists
+                </div>
+                <div class="doctors-container" style="border-radius: 0 0 12px 12px;">
+                    <div id="doctorsResults" class="doctors-grid"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Info Section -->
+        <div class="info-section">
+            <div class="section-header">
+                📚 About Skin Lesion Types
+            </div>
+            <div class="info-grid">
+                <div class="info-card">
+                    <h3>🔴 Melanoma (mel)</h3>
+                    <ul>
+                        <li>Most dangerous skin cancer</li>
+                        <li>Can spread to other organs</li>
+                        <li>Early detection is crucial</li>
+                        <li>Asymmetric, irregular borders</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>🟢 Melanocytic Nevi (nv)</h3>
+                    <ul>
+                        <li>Common moles</li>
+                        <li>Usually benign</li>
+                        <li>Symmetric and round</li>
+                        <li>Monitor for changes</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>🟡 Basal Cell Carcinoma (bcc)</h3>
+                    <ul>
+                        <li>Most common skin cancer</li>
+                        <li>Slow-growing</li>
+                        <li>Rarely spreads</li>
+                        <li>Highly treatable</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>🟠 Actinic Keratoses (akiec)</h3>
+                    <ul>
+                        <li>Precancerous lesions</li>
+                        <li>Caused by sun exposure</li>
+                        <li>Rough, scaly patches</li>
+                        <li>Can progress to cancer</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>🔵 Benign Keratosis (bkl)</h3>
+                    <ul>
+                        <li>Non-cancerous growths</li>
+                        <li>Common in older adults</li>
+                        <li>Warty appearance</li>
+                        <li>No treatment needed</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>🟣 Dermatofibroma (df)</h3>
+                    <ul>
+                        <li>Benign skin nodule</li>
+                        <li>Firm to touch</li>
+                        <li>Usually harmless</li>
+                        <li>Can be removed if bothersome</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>🔴 Vascular Lesions (vasc)</h3>
+                    <ul>
+                        <li>Blood vessel abnormalities</li>
+                        <li>Red or purple appearance</li>
+                        <li>Usually benign</li>
+                        <li>Various types exist</li>
+                    </ul>
+                </div>
+
+                <div class="info-card">
+                    <h3>📊 Model Information</h3>
+                    <ul>
+                        <li>EfficientNetB0 Architecture</li>
+                        <li>Trained on HAM10000 dataset</li>
+                        <li>80-90% Accuracy</li>
+                        <li>7 lesion types classified</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>Powered by TensorFlow & EfficientNet | For Educational & Research Purposes Only</p>
+            <p style="margin-top: 10px; font-size: 0.9em;">Always seek professional medical advice for skin concerns</p>
+        </div>
+    </div>
+
+    <!-- Chatbot Icon -->
+    <div class="chatbot-icon hidden" id="chatbotIcon" onclick="toggleChatbot()">
+        <span class="chatbot-icon-text">💬</span>
+        <span class="chatbot-pulse"></span>
+    </div>
+
+    <!-- Chatbot Modal -->
+    <div class="chatbot-modal" id="chatbotModal">
+        <div class="chatbot-header">
+            <h3>💬 Ask About Your Analysis</h3>
+            <button class="chatbot-close" onclick="toggleChatbot()">×</button>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-empty">
+                <div class="chatbot-empty-icon">💬</div>
+                <p>Ask me anything about your medical analysis!</p>
+                <p style="font-size: 0.9em; margin-top: 10px; color: #666;">I can help explain the condition, treatments, symptoms, and more.</p>
+            </div>
+        </div>
+        <div class="chatbot-input-container">
+            <input type="text" class="chatbot-input" id="chatbotInput" placeholder="Ask a question..." onkeypress="handleChatKeyPress(event)">
+            <button class="chatbot-send" id="chatbotSend" onclick="sendChatMessage()">
+                <span>Send</span>
+            </button>
+        </div>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="js/script.js"></script>
+</body>
+</html>

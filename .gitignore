@@ -1,0 +1,13 @@
+# Ignore Python virtual environment
+.venv/
+
+# Ignore environment variable files
+.env
+
+# Ignore Python cache files
+__pycache__/
+*.pyc
+
+# Ignore dataset images
+HAM10000_images_part_1/
+HAM10000_images_part_2/
